@@ -1,6 +1,9 @@
 const axios = require('axios');
+const fs = require('fs');
+
 class Searches{
-    history = ['slp','mexico','san jose'];
+    history = [];
+    dbPath = './db/places.json';
     constructor(){
     }
 
@@ -54,6 +57,30 @@ class Searches{
         }catch(err){
             return null;
         }
+    }
+    saveDB(){
+        const payload ={
+            history: this.history
+        }
+        fs.writeFileSync(this.dbPath, JSON.stringify(payload));
+    }
+
+    handleHistory(place=''){
+        // prevent duplicated data
+        if(!this.history.includes(place.toLocaleLowerCase())){
+            this.history.unshift(place.toLocaleLowerCase());
+            // save in db (file)
+            this.saveDB();
+        }
+    }
+
+
+    readDB(){
+        if(!fs.existsSync(this.dbPath)){
+            return;
+        }
+        const data = fs.readFileSync(this.dbPath,{encoding:'utf-8'});
+        this.history=JSON.parse(data).history;
     }
 }
 
