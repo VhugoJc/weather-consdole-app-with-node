@@ -6,7 +6,7 @@ class Searches{
 
     get paramsMapBox(){
         return{
-            'limit':9,
+            'limit':4,
             'language':'es',
             'access_token':process.env.MAPBOX_KEY
         }
@@ -21,13 +21,39 @@ class Searches{
             })
             const response = await instance.get();
 
-            console.log(response.data);
-            return [];
+            return response.data.features.map( place =>{
+                return{
+                    id: place.id,
+                    name: place.place_name,
+                    lg:place.center[0],
+                    lt:place.center[1]
+                }
+            });
 
         }catch(err){
-            
+            return [];
         }
 
+    }
+
+    async weather(lat, lg){
+        try{
+            const instance = axios.create({
+                baseURL: 'https://api.openweathermap.org/data/2.5/weather',
+                params:{
+                    'lat':lat,
+                    'lon':lg,
+                    'appid':process.env.OPENWEATRHER_KEY,
+                    'units':'metric',
+                    'lang':'es'
+                }
+            });
+            const response =  await instance.get();
+            console.log("####");
+            return response.data
+        }catch(err){
+            return null;
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
+const Searches = require("../models/Searches");
 require("colors");
 
-require("colors");
 
 const inquirerMenu = async () => {
     const menuOptions = [
@@ -66,11 +66,11 @@ const readInput =async (message) => {
     const {desc} = await inquirer.prompt(question);
     return desc;
 }
-const deleteTasks = async  (tasks=[]) =>{
-  const choices= tasks.map((task,index)=>{
+const listPlaces = async  (places=[]) =>{
+  const choices= places.map((place,index)=>{
     return{
-      value: task.id,
-      name: `${`${index}`.green} ${task.descript}`
+      value: place.id,
+      name: `${`${index}`.green} ${place.name}`
     }
   });
   choices.unshift({value:0,name:'Cancelar'}); //add to the begin
@@ -78,23 +78,14 @@ const deleteTasks = async  (tasks=[]) =>{
     {
       type: 'list',
       name:'id',
-      message:'¿Que tarea desea borrar?',
+      message:'¿Cual es el lugar?',
       choices
     }
   ]
   const {id} = await inquirer.prompt(questions);
+  const selectedPlace = places.find(places => id===places.id);
 
-  if(id===0){
-    return null;
-  }
-
-  const answer = await confirmAction('Estas seguro de eliminar esta tarea?')
-
-  if(answer){
-    return id;
-  }
-
-  return null;
+  return selectedPlace;
 }
 const confirmAction=async(message)=>{
   const question = [
@@ -138,4 +129,4 @@ const showCheckList = async  (tasks=[]) =>{
   const {ids} = await inquirer.prompt(questions);
   return ids;
 }
-module.exports = { inquirerMenu, inquirerPause,readInput, deleteTasks, showCheckList};
+module.exports = { inquirerMenu, inquirerPause,readInput, listPlaces, showCheckList};
